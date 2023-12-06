@@ -126,43 +126,47 @@ class QueryBuilder
     }
 }
 
- class DynamicJoinBuilder
-{
-    public static IQueryable<Stok> BuildLeftJoinQuery(IQueryable<Stok> stokQuery, string filter)
-    {
-        ParameterExpression stokParam = Expression.Parameter(typeof(Stok), "stok");
-        ParameterExpression referansParam = Expression.Parameter(typeof(Referans), "referans");
+#region Join Denemeleri
+//class DynamicJoinBuilder
+//{
+//    public static IQueryable<Stok> BuildLeftJoinQuery(IQueryable<Stok> stokQuery, string filter)
+//    {
+//        ParameterExpression stokParam = Expression.Parameter(typeof(Stok), "stok");
+//        ParameterExpression referansParam = Expression.Parameter(typeof(Referans), "referans");
 
-        Expression<Func<Referans, bool>> referansFilter = x => x.Aciklama1 == filter;
+//        Expression<Func<Referans, bool>> referansFilter = x => x.Aciklama1 == filter;
 
-        var referansQuery = _tenantDbContext.Referans
-            .Where(referansFilter)
-            .AsQueryable();
+//        var referansQuery = _tenantDbContext.Referans
+//            .Where(referansFilter)
+//            .AsQueryable();
 
-        Expression joinExpression = BuildLeftJoinExpression(stokParam, referansParam, referansQuery);
+//        Expression joinExpression = BuildLeftJoinExpression(stokParam, referansParam, referansQuery);
 
-        var resultQuery = stokQuery.Provider.CreateQuery<Stok>(joinExpression);
+//        var resultQuery = stokQuery.Provider.CreateQuery<Stok>(joinExpression);
 
-        return resultQuery;
-    }
+//        return resultQuery;
+//    }
 
-    private static Expression BuildLeftJoinExpression(ParameterExpression stokParam, ParameterExpression referansParam, IQueryable<Referans> referansQuery)
-    {
-        // Build the dynamic left join expression
-        return Expression.Call(
-            typeof(Queryable), "GroupJoin",
-            new Type[] { typeof(Stok), typeof(Referans), typeof(int), typeof(IQueryable<Referans>) },
-            stokQuery.Expression, referansQuery.Expression,
-            Expression.Lambda<Func<Stok, int>>(Expression.Property(stokParam, "Kod1"), stokParam),
-            Expression.Lambda<Func<Referans, int>>(Expression.Property(referansParam, "Kod"), referansParam),
-            Expression.Quote(Expression.Lambda<Func<Stok, IEnumerable<Referans>>>(Expression.Constant(null), stokParam))
-        );
+//    private static Expression BuildLeftJoinExpression(ParameterExpression stokParam, ParameterExpression referansParam, IQueryable<Referans> referansQuery)
+//    {
+//        // Build the dynamic left join expression
+//        return Expression.Call(
+//            typeof(Queryable), "GroupJoin",
+//            new Type[] { typeof(Stok), typeof(Referans), typeof(int), typeof(IQueryable<Referans>) },
+//            stokQuery.Expression, referansQuery.Expression,
+//            Expression.Lambda<Func<Stok, int>>(Expression.Property(stokParam, "Kod1"), stokParam),
+//            Expression.Lambda<Func<Referans, int>>(Expression.Property(referansParam, "Kod"), referansParam),
+//            Expression.Quote(Expression.Lambda<Func<Stok, IEnumerable<Referans>>>(Expression.Constant(null), stokParam))
+//        );
 
-    }
+//    }
+//}
+#endregion
 
 
 
-        #region Enumarable?? Filter
+
+#region Enumarable?? Filter
 //if (prop.Type.Name.Contains("List"))
 //{
 //    ParameterExpression parameter = Expression.Parameter(prop.Member.DeclaringType, "x");
